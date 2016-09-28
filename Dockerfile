@@ -21,8 +21,10 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install php7.0-mysql php7.0-mcry
 # install nginx (full)
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y nginx-full
 
-# install latest version of git
+# install latest version of git, net-tools and nano
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y git
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y net-tools
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y nano
 
 # install php composer
 RUN curl -sS https://getcomposer.org/installer | php
