@@ -25,6 +25,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y nginx-full
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y git
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y net-tools
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y nano
+ADD build/config.json /root/,composer/config.json
 
 # install php composer
 RUN curl -sS https://getcomposer.org/installer | php
@@ -57,6 +58,9 @@ RUN chmod +x /etc/service/phpfpm/run
 RUN mkdir -p /var/www/public
 ADD build/index.php /var/www/public/index.php
 
+# set GitHub credentials
+ADD build/config.json /root/.composer/config.json
+
 RUN chown -R www-data:www-data /var/www
 RUN chmod 755 /var/www
 
@@ -67,8 +71,7 @@ RUN /usr/local/bin/composer create-project --prefer-dist \
 
 # Configure nginx
 ADD yii /etc/nginx/sites-available/yii
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf && \
-    echo "cgi.fix_pathinfo = 0;" >> /etc/php/7.0/fpm/php.ini && \
+RUN echo "cgi.fix_pathinfo = 0;" >> /etc/php/7.0/fpm/php.ini && \
     sed -i.bak 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php/7.0/fpm/php.ini && \
     sed -i.bak '/;catch_workers_output = yes/ccatch_workers_output = yes' /etc/php/7.0/fpm/pool.d/www.conf && \
     sed -i.bak 's/log_errors_max_len = 1024/log_errors_max_len = 65536/' /etc/php/7.0/fpm/php.ini
