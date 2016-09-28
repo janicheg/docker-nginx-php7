@@ -1,6 +1,5 @@
-erver {
-     listen 80 default_server;
-     listen [::]:80 default_server ipv6only=on;
+server {
+     listen *:80;
 
      root /var/www/app/web;
      index index.php;
