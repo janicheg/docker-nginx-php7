@@ -69,3 +69,28 @@ EXPOSE 80 9000
 # cleanup apt and lists
 RUN apt-get clean
 RUN apt-get autoclean
+RUN /usr/local/bin/composer create-project --prefer-dist \
+    yiisoft/yii2-app-basic:2.* \
+    /app
+
+# Configure nginx
+ADD yii /etc/nginx/sites-available/yii
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf && \
+    echo "cgi.fix_pathinfo = 0;" >> /etc/php/7.0/fpm/php.ini && \
+    sed -i.bak 's/variables_order = "GPCS"/variables_order = "EGPCS"/' /etc/php/7.0/fpm/php.ini && \
+    sed -i.bak '/;catch_workers_output = yes/ccatch_workers_output = yes' /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i.bak 's/log_errors_max_len = 1024/log_errors_max_len = 65536/' /etc/php/7.0/fpm/php.ini
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stderr /var/log/nginx/error.log
+# /!\ DEVELOPMENT ONLY SETTINGS /!\
+# Running PHP-FPM as root, required for volumes mounted from host
+RUN sed -i.bak 's/user = www-data/user = root/' /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i.bak 's/group = www-data/group = root/' /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i.bak 's/--fpm-config /-R --fpm-config /' /etc/init.d/php7.0-fpm
+# /!\ DEVELOPMENT ONLY SETTINGS /!\
+
+ADD run.sh /root/run.sh
+RUN chmod 700 /root/run.sh
+
+CMD ["/root/run.sh"]
+EXPOSE 80
