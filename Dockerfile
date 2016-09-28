@@ -1,5 +1,5 @@
 FROM phusion/baseimage
-MAINTAINER Thiago Taranto <ttaranto@gmail.com>
+MAINTAINER Jan Kurbanov <jan@kurbanov.me>
 
 # ensure UTF-8
 RUN locale-gen en_US.UTF-8
@@ -21,9 +21,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install php7.0-mysql php7.0-mcry
 # install nginx (full)
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y nginx-full
 
-# install latest version of nodejs
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y nodejs
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y npm
+# install latest version of git
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y git
 
 # install php composer
