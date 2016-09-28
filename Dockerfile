@@ -60,15 +60,7 @@ ADD build/index.php /var/www/public/index.php
 RUN chown -R www-data:www-data /var/www
 RUN chmod 755 /var/www
 
-# set terminal environment
-ENV TERM=xterm
-
-# port and settings
-EXPOSE 80 9000
-
-# cleanup apt and lists
-RUN apt-get clean
-RUN apt-get autoclean
+RUN /usr/local/bin/composer global require "fxp/composer-asset-plugin:^1.2.0"
 RUN /usr/local/bin/composer create-project --prefer-dist \
     yiisoft/yii2-app-basic:2.* \
     /var/www/app
@@ -93,4 +85,13 @@ ADD run.sh /root/run.sh
 RUN chmod 700 /root/run.sh
 
 CMD ["/root/run.sh"]
-EXPOSE 80
+
+# set terminal environment
+ENV TERM=xterm
+
+# port and settings
+EXPOSE 80 9000
+
+# cleanup apt and lists
+RUN apt-get clean
+RUN apt-get autoclean
