@@ -71,7 +71,7 @@ RUN apt-get clean
 RUN apt-get autoclean
 RUN /usr/local/bin/composer create-project --prefer-dist \
     yiisoft/yii2-app-basic:2.* \
-    /app
+    /var/www/app
 
 # Configure nginx
 ADD yii /etc/nginx/sites-available/yii
